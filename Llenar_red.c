@@ -37,12 +37,18 @@ void imprimir(int *red, int m, int n){
 		}
 	}
 
+/* Poblar una red de mxn con 0 y 1 con probablidad "proba" */
+
 float* red;
 int n,m;
-n = 10;
-m = 10;
+float proba;
+proba = 0.5;
+n = 5;
+m = 5;
 red = malloc(n*m*sizeof(int));
 
+llenar(red, m, n, proba);
+imprimir(red, m, n);
 }
 
 
