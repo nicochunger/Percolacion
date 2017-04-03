@@ -31,10 +31,10 @@ void imprimir(int *red, int m, int n){
 	int i, j;
 	for(i=0;i<m;i=i+1){
 		for(j=0;j<n;j=j+1){
-			printf("%d ", red[i]
+			printf("%d ", red[i*m+j]);
 			}
+		printf("\n");
 		}
-
 	}
 
 float* red;
