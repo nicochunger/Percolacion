@@ -4,9 +4,13 @@
 
 int main(){
 
+int i;
 srand(time(NULL));
-double X=((double)rand()/(double)RAND_MAX);
+for(i=0;i<10;i=i+1){
+
+double X = ((double)rand()/(double)RAND_MAX);
 
 printf("%f \n", X);
+}
 
 }

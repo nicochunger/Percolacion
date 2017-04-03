@@ -9,14 +9,30 @@ int main(){
 void llenar(int* red, int m, int n, float proba);
 void imprimir(int* red, int m, int n);
 
+
+/* Poblar una red de mxn con 0 y 1 con probablidad "proba" */
+int* red;
+int n,m;
+float proba;
+proba = 0.5;
+n = 5;
+m = 5;
+red = malloc(n*m*sizeof(int));
+
+llenar(red, m, n, proba);
+imprimir(red, m, n);
+}
+
+
 /* Definicion de Funciones */
 
 void llenar(int* red, int m, int n, float proba){
 
 	int i;
+	srand(time(NULL));
 	for(i=0;i<n*m;i=i+1){
-		srand(time(NULL));
-		double rdom=((double)rand()/(double)RAND_MAX);
+		
+		double rdom = ((double)rand()/(double)RAND_MAX);
 	
 		if(rdom<proba){
 			red[i]=1;
@@ -38,20 +54,6 @@ void imprimir(int* red, int m, int n){
 		printf("\n");
 		}
 	}
-
-/* Poblar una red de mxn con 0 y 1 con probablidad "proba" */
-int* red;
-int n,m;
-float proba;
-proba = 0.5;
-n = 5;
-m = 5;
-red = malloc(n*m*sizeof(int));
-
-llenar(red, m, n, proba);
-imprimir(red, m, n);
-}
-
 
 
 
