@@ -6,12 +6,12 @@ int main(){
 
 /* Declaracion de Funciones*/
 
-void llenar(int *red, int m, int n, float proba);
-void imprimir(int *red, int m, int n);
+void llenar(int* red, int m, int n, float proba);
+void imprimir(int* red, int m, int n);
 
 /* Definicion de Funciones */
 
-void llenar(int *red, int m, int n, float proba){
+void llenar(int* red, int m, int n, float proba){
 
 	int i;
 	for(i=0;i<n*m;i=i+1){
@@ -19,14 +19,16 @@ void llenar(int *red, int m, int n, float proba){
 		double rdom=((double)rand()/(double)RAND_MAX);
 	
 		if(rdom<proba){
-			red[i]=1}
+			red[i]=1;
+			}
 		else{
-			red[i]=0}
+			red[i]=0;
+			}
 		}
 
 	}
 
-void imprimir(int *red, int m, int n){
+void imprimir(int* red, int m, int n){
 
 	int i, j;
 	for(i=0;i<m;i=i+1){
@@ -38,8 +40,7 @@ void imprimir(int *red, int m, int n){
 	}
 
 /* Poblar una red de mxn con 0 y 1 con probablidad "proba" */
-
-float* red;
+int* red;
 int n,m;
 float proba;
 proba = 0.5;
