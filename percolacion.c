@@ -71,7 +71,7 @@ int hoshen(int *red,int n)
   int i,j,k,s1,s2,frag;
   int *clase;
 
-  frag=0; //frag = Fragmento (etiqueta)
+  frag=0; //frag = Fragmento (etiqueta actual de los clusters)
   
   clase=(int *)malloc(n*n*sizeof(int));
 
@@ -109,10 +109,10 @@ int hoshen(int *red,int n)
          }
 
       for(j=1;j<n;j++)
-	if (*(red+i+j))
+	  if (*(red+i+j))
 	  {
 	    s1=*(red+i+j-1); 
-            s2=*(red+i+j-n);
+        s2=*(red+i+j-n);
 
 	    if (s1*s2>0)
 	      {
@@ -154,11 +154,20 @@ void llenar(int* red, int n, float proba)
 			}
 		}
 
-	}
+}
 
 
 int   actualizar(int *red,int *clase,int s,int frag)
 {
+	/*
+	Se fija cual es el valor de s. Si es negativo busca la etiqueta
+	verdadera. Si s es cero, tengo que asignar una etiqueta nueva, para eso
+	tengo que aumentar frag en 1, asignar esa eqtiqueta a la posicion y
+	y devolver el nuevo valor de frag.
+	Si asignaste una etiqueta nueva tiene que actualizar el vector clase con
+	esa nueva etiqueta.
+	*/
+
 	
 }
 
@@ -178,4 +187,15 @@ void  corregir_etiqueta(int *red,int *clase,int n)
 			s = -clase[s];
 		red[i] = s;
 	}
+}
+
+void  etiqueta_falsa(int *red,int *clase,int s1,int s2)
+{
+	/*
+	Primero traquea la etiqueta verdadera de s1 y de s2, despues se fija cual
+	de los dos es mas chiquito. Al s mas grande le asigna el valor del s mas
+	chiquito pero con una etiqueta falsa, osea le pone un signo negativo.
+	*/
+
+
 }
