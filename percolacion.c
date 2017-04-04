@@ -7,7 +7,7 @@
 #define N     30             // lado de la red simulada
 
 
-void  llenar(int *red,int n,float prob);
+void  llenar(int *red, int n, float proba);
 int   hoshen(int *red,int n);
 int   actualizar(int *red,int *clase,int s,int frag);
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2);
@@ -58,7 +58,7 @@ int main(int argc,char *argv[])
   return 0;
 }
 
-
+/* Definicion de Funciones */
 
 int hoshen(int *red,int n)
 {
@@ -71,7 +71,7 @@ int hoshen(int *red,int n)
   int i,j,k,s1,s2,frag;
   int *clase;
 
-  frag=0;
+  frag=0; //frag = Fragmento (etiqueta)
   
   clase=(int *)malloc(n*n*sizeof(int));
 
@@ -133,4 +133,49 @@ int hoshen(int *red,int n)
   return 0;
 }
 
+void llenar(int* red, int n, float proba)
+{
+	/* 
+	Esta funcion toma una red de nxn y la llena con 0s y 1s
+	con probabilidad proba 
+	*/
 
+	int i;
+	srand(time(NULL));
+	for(i=0;i<n*n;i=i+1){
+		
+		double rdom = ((double)rand()/(double)RAND_MAX);
+	
+		if(rdom<proba){
+			red[i]=1;
+			}
+		else{
+			red[i]=0;
+			}
+		}
+
+	}
+
+
+int   actualizar(int *red,int *clase,int s,int frag)
+{
+	
+}
+
+
+void  corregir_etiqueta(int *red,int *clase,int n)
+{
+	/*
+	Despues de hacer el algorimto de Hosher Koperman, pasa una vez mas por toda
+	red para corregir todas las etiquetas.
+	*/
+	
+	int i,s;	
+	for(i=0;i<n*n;i++)
+	{
+		s = red[i];
+		while(clase[s]<0)
+			s = -clase[s];
+		red[i] = s;
+	}
+}
