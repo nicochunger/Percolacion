@@ -192,9 +192,11 @@ void  corregir_etiqueta(int *red,int *clase,int n)
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2)
 {
 	/*
+	Resuelve el conflicto de si los dos s estaban ocupados.
 	Primero traquea la etiqueta verdadera de s1 y de s2, despues se fija cual
 	de los dos es mas chiquito. Al s mas grande le asigna el valor del s mas
 	chiquito pero con una etiqueta falsa, osea le pone un signo negativo.
+	Y a la posicion esa de la red le pone la etiqueta que quedo.
 	*/
 
 
