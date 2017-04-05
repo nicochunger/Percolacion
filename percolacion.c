@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <math.h>
+#include <time.h>
 
 #define P     16             // 1/2^P, P=16
 #define Z     27000          // iteraciones
@@ -10,8 +11,8 @@
 void  llenar(int *red, int n, float proba);
 void  imprimir(int* red, int n);
 int   hoshen(int *red,int n);
-int   actualizar(int *red,int *clase,int s,int frag);
-void  etiqueta_falsa(int *red,int *clase,int s1,int s2);
+int   actualizar(int *sitio,int *clase,int s,int frag);
+void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
 
@@ -19,9 +20,11 @@ int main(/*int argc,char *argv[]*/)
 {
   int    i,j,*red;
   float  proba,denominador;
-
+/*
   n=N;
   z=Z;
+*/
+	int n = 10;
 	proba = 0.5;
 /*
   if (argc==3) 
@@ -59,7 +62,7 @@ int main(/*int argc,char *argv[]*/)
 
   return 0;
 */
-	llenar(red, z, proba);
+	llenar(red, n, proba);
 	imprimir(red, n);
 	hoshen(red, n);
 	imprimir(red, n);
@@ -133,10 +136,9 @@ int hoshen(int *red,int n)
 	  }
     }
 
-
   corregir_etiqueta(red,clase,n);
 
-  free(clase):
+  free(clase);
 
   return 0;
 }
@@ -161,7 +163,6 @@ void llenar(int* red, int n, float proba)
 			red[i]=0;
 			}
 		}
-
 }
 
 void imprimir(int* red, int n){
@@ -173,6 +174,7 @@ void imprimir(int* red, int n){
 			}
 		printf("\n");
 		}
+	printf("\n");
 }
 
 int   actualizar(int *sitio,int *clase,int s,int frag)
@@ -191,17 +193,17 @@ int   actualizar(int *sitio,int *clase,int s,int frag)
 	s0 = s;
 	while(clase[s0]<0)
 		s0 = -clase[s0];
-	sitio = s0;
+	*sitio = s0;
 
 	if(s == 0){
 	frag0 = frag + 1;
-	sitio = frag0;
+	*sitio = frag0;
 
 	clase[frag0] = frag0;
-	return frag0
+	return frag0;
 	
 	}
-	
+	return frag;
 }
 
 
@@ -222,7 +224,7 @@ void  corregir_etiqueta(int *red,int *clase,int n)
 	}
 }
 
-void  etiqueta_falsa(int sitio,int *clase,int s1,int s2)
+void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2)
 {
 	/*
 	Resuelve el conflicto de si los dos s estaban ocupados.
@@ -243,11 +245,11 @@ void  etiqueta_falsa(int sitio,int *clase,int s1,int s2)
 	if(s10<s20){
 		clase[s20] = -s10;
 		clase[s10] = s10;
-		sitio = s10;
+		*sitio = s10;
 	}
 	else{
 		clase[s10] = -s20;
 		clase[s20] = s20;
-		sitio = s20;
+		*sitio = s20;
 	}
 }
