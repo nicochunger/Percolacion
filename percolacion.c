@@ -8,29 +8,31 @@
 
 
 void  llenar(int *red, int n, float proba);
+void  imprimir(int* red, int n);
 int   hoshen(int *red,int n);
 int   actualizar(int *red,int *clase,int s,int frag);
 void  etiqueta_falsa(int *red,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
 
-int main(int argc,char *argv[])
+int main(/*int argc,char *argv[]*/)
 {
   int    i,j,*red;
-  float  prob,denominador;
+  float  proba,denominador;
 
   n=N;
   z=Z;
-
+	proba = 0.5;
+/*
   if (argc==3) 
      {
        sscanf(argv[1],"%d",&n);
        sscanf(argv[2],"%d",&z);
      }
-    
+  */  
   red=(int *)malloc(n*n*sizeof(int));
 
-
+/*
 
   for(i=0;i<z;i++)
     {
@@ -56,6 +58,12 @@ int main(int argc,char *argv[])
   free(red);
 
   return 0;
+*/
+	llenar(red, z, proba);
+	imprimir(red, n);
+	hoshen(red, n);
+	imprimir(red, n);
+
 }
 
 /* Definicion de Funciones */
@@ -156,6 +164,16 @@ void llenar(int* red, int n, float proba)
 
 }
 
+void imprimir(int* red, int n){
+
+	int i, j;
+	for(i=0;i<n;i=i+1){
+		for(j=0;j<n;j=j+1){
+			printf("%d ", red[i*n+j]);
+			}
+		printf("\n");
+		}
+}
 
 int   actualizar(int *sitio,int *clase,int s,int frag)
 {
