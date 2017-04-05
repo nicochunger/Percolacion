@@ -157,17 +157,32 @@ void llenar(int* red, int n, float proba)
 }
 
 
-int   actualizar(int *red,int *clase,int s,int frag)
+int   actualizar(int *sitio,int *clase,int s,int frag)
 {
 	/*
 	Se fija cual es el valor de s. Si es negativo busca la etiqueta
-	verdadera. Si s es cero, tengo que asignar una etiqueta nueva, para eso
+	verdadera y se la asigna a la posicion actual. Si s es cero, tengo que 
+	asignar una etiqueta nueva, para eso
 	tengo que aumentar frag en 1, asignar esa eqtiqueta a la posicion y
 	y devolver el nuevo valor de frag.
 	Si asignaste una etiqueta nueva tiene que actualizar el vector clase con
 	esa nueva etiqueta.
 	*/
 
+	int s0,frag0;
+	s0 = s;
+	while(clase[s0]<0)
+		s0 = -clase[s0];
+	sitio = s0;
+
+	if(s == 0){
+	frag0 = frag + 1;
+	sitio = frag0;
+
+	clase[frag0] = frag0;
+	return frag0
+	
+	}
 	
 }
 
@@ -175,8 +190,8 @@ int   actualizar(int *red,int *clase,int s,int frag)
 void  corregir_etiqueta(int *red,int *clase,int n)
 {
 	/*
-	Despues de hacer el algorimto de Hosher Koperman, pasa una vez mas por toda
-	red para corregir todas las etiquetas.
+	Despues de hacer el algorimto de Hosher Kopermann, pasa una vez mas por toda
+	la red para corregir todas las etiquetas.
 	*/
 	
 	int i,s;	
