@@ -204,7 +204,7 @@ void  corregir_etiqueta(int *red,int *clase,int n)
 	}
 }
 
-void  etiqueta_falsa(int *red,int *clase,int s1,int s2)
+void  etiqueta_falsa(int sitio,int *clase,int s1,int s2)
 {
 	/*
 	Resuelve el conflicto de si los dos s estaban ocupados.
@@ -214,5 +214,22 @@ void  etiqueta_falsa(int *red,int *clase,int s1,int s2)
 	Y a la posicion esa de la red le pone la etiqueta que quedo.
 	*/
 
+	int s10, s20;
+	s10 = s1;
+	s20 = s2;
+	while(clase[s10]<0)
+		s10 = -clase[s10];
+	while(clase[s20]<0)
+		s20 = -clase[s20];
 
+	if(s10<s20){
+		clase[s20] = -s10;
+		clase[s10] = s10;
+		sitio = s10;
+	}
+	else{
+		clase[s10] = -s20;
+		clase[s20] = s20;
+		sitio = s20;
+	}
 }
