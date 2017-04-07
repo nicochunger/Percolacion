@@ -91,7 +91,7 @@ int hoshen(int *red,int n)
   // primer elemento de la red
 
   s1=0;
-  frag=2;
+  frag=1; //Empiezo en 1 para que el primer fragmento sea un 2 (mirar func actualizar)
   if (*red) frag=actualizar(red,clase,s1,frag);
   
   // primera fila de la red
@@ -201,8 +201,8 @@ int   actualizar(int *sitio,int *clase,int s,int frag)
 
 	clase[frag0] = frag0;
 	return frag0;
-	
 	}
+
 	return frag;
 }
 
@@ -252,4 +252,52 @@ void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2)
 		clase[s20] = s20;
 		*sitio = s20;
 	}
+}
+
+int   percola(int *red,int n){
+
+/*
+Esta funcion se fija si la red percolo o no, La forma en que lo hace es fijandose si unos de los
+clusters se extiende desde el extremo de arriba hasta el extremo de abajo.
+Devuelve un 1 si percolo y un 0 si no percolo.
+*/
+int tamvec = (n*n)/2;
+
+int arriba[tamvec];
+int abajo[tamvec];
+int i;
+
+// Inicializo los dos vectores con todos 0s
+for(i=0;i<tamvec;i++){
+	arriba[i] = 0;
+	abajo[i] = 0;
+	}
+
+// Recorro la fila de arriba y lleno con un 1 los fragmentos que hay
+i=0;
+for(i=0;i<n;i++){
+	if(red[i] != 0)
+		arriba[red[i]] = 1;
+	}
+
+// Recorro la fila de abajo y lleno con un 1 los fragmentos que hay
+i=0;
+for(i=0;i<n;i++){
+	if(red[i] != 0)
+		abajo[red[i]] = 1;
+	}
+
+// Creo un vector que es el procuto elemento a elemento de arriba y abajo.
+// Si queda algun 1 en el vector producto significa que la red percolo.
+int producto[tamvec];
+for(i=0;i<tamvec;i++){
+	producto[i] = arriba[i] * abajo[i];
+	}
+
+int perc = 0;
+for(i=0;i<tamvec;i++){
+	if(producto[i]) perc=1;
+	}
+
+return perc;
 }
