@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define P     16             // 1/2^P, P=16
-#define Z     2000           // iteraciones
+#define Z     20           // iteraciones
 #define N     30             // lado de la red simulada
 
 
@@ -18,11 +18,11 @@ int   percola(int *red,int n);
 
 int main(/*int argc,char *argv[]*/)
 {
-  int    n,z,i,j,*red;
+  int    n,z,i,j,*red,l;
   float  proba,denominador;
-  float *ps,promedio; //Vector con las probabilidades percolantes obtenidas en cada iteracion
+  float  *ps,*promedio,prom; //Vector con las probabilidades percolantes obtenidas en cada iteracion
 
-  n=N;
+  //n=N;
   z=Z;
 /*
 	int n = 10;
@@ -39,8 +39,10 @@ int main(/*int argc,char *argv[]*/)
   
   red=(int *)malloc(n*n*sizeof(int));
   ps = malloc(z*sizeof(float));
-srand(time(NULL));
-
+  promedio = malloc(6*sizeof(float));
+  srand(time(NULL));
+  l=0;
+for(n=4;n<129;n*=2){
   for(i=0;i<z;i++)
     {
       proba=0.5;
@@ -62,12 +64,15 @@ srand(time(NULL));
         }
 	ps[i] = proba;
     }
+prom = 0.0;
+for(i=0;i<z;i++) prom+=ps[i];
+promedio[l] = prom / z;
+l++;
+}
 
 //for(i=0;i<z;i++) printf("%f\n",ps[i]);
 
-for(i=0;i<z;i++) promedio+=ps[i];
-promedio = promedio / z;
-printf("%f\n",promedio);
+  for(i=0;i<6;i++) printf("%f\n",promedio[i]);
 
   free(red);
 
