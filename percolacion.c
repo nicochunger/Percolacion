@@ -25,7 +25,7 @@ int main(/*int argc,char *argv[]*/)
   z=Z;
 */
 	int n = 10;
-	proba = 0.5;
+	proba = 0.7;
 /*
   if (argc==3) 
      {
@@ -66,6 +66,7 @@ int main(/*int argc,char *argv[]*/)
 	imprimir(red, n);
 	hoshen(red, n);
 	imprimir(red, n);
+	printf("\n%d\n", percola(red, n));
 
 }
 
@@ -263,13 +264,19 @@ Devuelve un 1 si percolo y un 0 si no percolo.
 */
 int tamvec = (n*n)/2;
 
-int arriba[tamvec];
-int abajo[tamvec];
-int i;
+int *arriba;
+int *abajo;
+int i,j;
+
+arriba = malloc(tamvec*sizeof(int));
+abajo = malloc(tamvec*sizeof(int));
 
 // Inicializo los dos vectores con todos 0s
 for(i=0;i<tamvec;i++){
 	arriba[i] = 0;
+	}
+
+for(i=0;i<tamvec;i++){
 	abajo[i] = 0;
 	}
 
@@ -281,20 +288,25 @@ for(i=0;i<n;i++){
 	}
 
 // Recorro la fila de abajo y lleno con un 1 los fragmentos que hay
-i=0;
-for(i=0;i<n;i++){
-	if(red[i] != 0)
-		abajo[red[i]] = 1;
+//i=0;
+for(i=n*(n-1);i<n*n;i++){
+	//printf("%d",i);
+	if(red[i] != 0){
+		abajo[*(red+i)] = 1;
+		}
 	}
+
 
 // Creo un vector que es el procuto elemento a elemento de arriba y abajo.
 // Si queda algun 1 en el vector producto significa que la red percolo.
 int producto[tamvec];
+i=0;
 for(i=0;i<tamvec;i++){
 	producto[i] = arriba[i] * abajo[i];
 	}
 
 int perc = 0;
+i=0;
 for(i=0;i<tamvec;i++){
 	if(producto[i]) perc=1;
 	}
