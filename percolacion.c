@@ -4,8 +4,8 @@
 #include <time.h>
 
 #define P     16             // 1/2^P, P=16
-#define Z     20           // iteraciones
-#define N     30             // lado de la red simulada
+#define Z     2000          // iteraciones
+#define N     32             // lado de la red simulada
 
 
 void  llenar(int *red, int n, float proba);
@@ -18,16 +18,15 @@ int   percola(int *red,int n);
 
 int main(/*int argc,char *argv[]*/)
 {
-  int    n,z,i,j,*red,l;
+  int    n,z,i,j,*red;
   float  proba,denominador;
-  float  *ps,*promedio,prom; //Vector con las probabilidades percolantes obtenidas en cada iteracion
+  float  *ps,promedio,sum; 
 
-  //n=N;
-  z=Z;
-/*
-	int n = 10;
-	proba = 0.7;
-*/
+// ps: Vector con las probabilidades percolantes obtenidas en cada iteracion
+// promedio: Promedio de las probabilidades obtenidas en cada iteracion
+
+  n=N; //Tamano de la red
+  z=Z; //Numero de iteraciones
 
 /*
   if (argc==3) 
@@ -37,13 +36,11 @@ int main(/*int argc,char *argv[]*/)
      }
 */
   
-  red=(int *)malloc(n*n*sizeof(int));
-  ps = malloc(z*sizeof(float));
-  promedio = malloc(6*sizeof(float));
-  srand(time(NULL));
-  l=0;
-for(n=4;n<129;n*=2){
-  for(i=0;i<z;i++)
+  red=(int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
+  ps = malloc(z*sizeof(float)); // Probabilidad percolate despues de cada iteracion
+  srand(time(NULL)); // Inicia las seeds para la funcion rand()
+
+for(i=0;i<z;i++)
     {
       proba=0.5;
       denominador=2.0;
@@ -64,19 +61,15 @@ for(n=4;n<129;n*=2){
         }
 	ps[i] = proba;
     }
-prom = 0.0;
-for(i=0;i<z;i++) prom+=ps[i];
-promedio[l] = prom / z;
-l++;
-}
+sum = 0.0;
+for(i=0;i<z;i++) sum+=ps[i]; //Calculo promedio de todos los pc obtenidos en ese tamano de red
+promedio = sum / z;
 
-//for(i=0;i<z;i++) printf("%f\n",ps[i]);
+printf("pc para red de lado %d: %f\n",n,promedio); // Imprime el pc obtenido
 
-  for(i=0;i<6;i++) printf("%f\n",promedio[i]);
+free(red);
 
-  free(red);
-
-  return 0;
+return 0;
 /*
 	llenar(red, n, proba);
 	imprimir(red, n);
