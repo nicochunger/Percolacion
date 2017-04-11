@@ -37,7 +37,7 @@ int main(/*int argc,char *argv[]*/)
 */
   
   red=(int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
-  ps = malloc(z*sizeof(float)); // Probabilidad percolate despues de cada iteracion
+  ps = malloc(z*sizeof(float)); // Probabilidad percolante despues de cada iteracion
   srand(time(NULL)); // Inicia las seeds para la funcion rand()
 
 for(i=0;i<z;i++)
@@ -304,7 +304,6 @@ for(i=n*(n-1);i<n*n;i++){
 		abajo[*(red+i)] = 1;
 		}
 	}
-
 
 // Creo un vector que es el procuto elemento a elemento de arriba y abajo.
 // Si queda algun 1 en el vector producto significa que la red percolo.
