@@ -4,8 +4,8 @@
 #include <time.h>
 
 #define P     16             // 1/2^P, P=16
-#define Z     2000          // iteraciones
-#define N     32             // lado de la red simulada
+#define Z     5000          // iteraciones
+#define N     128             // lado de la red simulada
 
 
 void  llenar(int *red, int n, float proba);
@@ -15,6 +15,7 @@ int   actualizar(int *sitio,int *clase,int s,int frag);
 void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
+void  escribir(int p, int z, int n, float pc);
 
 int main(/*int argc,char *argv[]*/)
 {
@@ -67,7 +68,10 @@ promedio = sum / z;
 
 printf("pc para red de lado %d: %f\n",n,promedio); // Imprime el pc obtenido
 
+escribir(P, z, n, promedio);
+
 free(red);
+free(ps);
 
 return 0;
 /*
@@ -320,4 +324,23 @@ for(i=0;i<tamvec;i++){
 	}
 
 return perc;
+}
+
+void escribir(int p, int z, int n, float pc)
+{
+/* Esta funcion toma los valores obtenidos por la simulacion y los guarda en un archivo de texto
+*/
+
+int i;
+FILE *fp; // Declaro el puntero que va a ir al archivo (FILE es un tipo)
+
+fp = fopen("tp1_1a.txt","a"); // "r": read  "w": write   "a": append
+
+fprintf(fp,"Tamano de la red: %d\n",n);
+fprintf(fp,"Numero de iteraciones: %d\n",z);
+fprintf(fp,"Precision utilizada: %d\n",p);
+fprintf(fp,"Probabilidad critica obtenida: %f\n",pc);
+fprintf(fp,"\n");
+
+fclose(fp);
 }
