@@ -3,9 +3,9 @@
 #include <math.h>
 #include <time.h>
 
-#define P     2000             // 1/2^P, P=16
+#define P     1000             // 1/2^P, P=16
 #define Z     1000          // iteraciones
-#define N     60             // lado de la red simulada
+#define N     30             // lado de la red simulada
 
 
 void  llenar(int *red, int n, float proba);
@@ -47,7 +47,7 @@ int main(/*int argc,char *argv[]*/)
 
 	for(i=0;i<P;i++) 
 	{
-		proba[i] = i*(1.0/P);
+		proba[i] = i*(1.0/P); // Vector con todas las probabilidades
 	}
 
 	for(j=0;j<P;j++)
@@ -65,10 +65,7 @@ int main(/*int argc,char *argv[]*/)
 		ps[j] = count;
 	}
 
-	/*for(i=0;i<P;i++)
-		printf("%f\n",ps[i]);
-*/
-	dif_actual = 500;
+	dif_actual = P/2; //Inicializo la diferencia actual para encontrar la menor de todas
 	for(i=0;i<P;i++)
 	{
 		dif = abs(ps[i] - (z/2));
@@ -78,6 +75,8 @@ int main(/*int argc,char *argv[]*/)
 			p_actual = proba[i];
 		}
 	}
+
+	
 
 	printf("pc para red de lado %d: %f\n",n,p_actual); // Imprime el pc obtenido
 
@@ -180,28 +179,28 @@ void llenar(int* red, int n, float proba)
 
 	int i;
 	//srand(time(NULL));
-	for(i=0;i<n*n;i=i+1){
-		
+	for(i=0;i<n*n;i=i+1)
+	{
 		double rdom = ((double)rand()/(double)RAND_MAX);
 	
-		if(rdom<proba){
+		if(rdom<proba) 
 			red[i]=1;
-			}
-		else{
+		else 
 			red[i]=0;
-			}
-		}
+	}
 }
 
-void imprimir(int* red, int n){
-
+void imprimir(int* red, int n)
+{
 	int i, j;
-	for(i=0;i<n;i=i+1){
-		for(j=0;j<n;j=j+1){
+	for(i=0;i<n;i=i+1)
+	{
+		for(j=0;j<n;j=j+1)
+		{
 			printf("%d ", red[i*n+j]);
-			}
-		printf("\n");
 		}
+		printf("\n");
+	}
 	printf("\n");
 }
 
@@ -223,12 +222,13 @@ int   actualizar(int *sitio,int *clase,int s,int frag)
 		s0 = -clase[s0];
 	*sitio = s0;
 
-	if(s == 0){
-	frag0 = frag + 1;
-	*sitio = frag0;
+	if(s == 0)
+	{
+		frag0 = frag + 1;
+		*sitio = frag0;
 
-	clase[frag0] = frag0;
-	return frag0;
+		clase[frag0] = frag0;
+		return frag0;
 	}
 
 	return frag;
@@ -270,12 +270,14 @@ void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2)
 	while(clase[s20]<0)
 		s20 = -clase[s20];
 
-	if(s10<s20){
+	if(s10<s20)
+	{
 		clase[s20] = -s10;
 		clase[s10] = s10;
 		*sitio = s10;
 	}
-	else{
+	else
+	{
 		clase[s10] = -s20;
 		clase[s20] = s20;
 		*sitio = s20;
@@ -284,81 +286,77 @@ void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2)
 
 int   percola(int *red,int n){
 
-/*
-Esta funcion se fija si la red percolo o no, La forma en que lo hace es fijandose si unos de los
-clusters se extiende desde el extremo de arriba hasta el extremo de abajo.
-Devuelve un 1 si percolo y un 0 si no percolo.
-*/
-int tamvec = (n*n)/2;
+	/*
+	Esta funcion se fija si la red percolo o no, La forma en que lo hace es fijandose si unos de los
+	clusters se extiende desde el extremo de arriba hasta el extremo de abajo.
+	Devuelve un 1 si percolo y un 0 si no percolo.
+	*/
+	int tamvec = (n*n)/2; //Tamano maximo de etiquetas posibles
 
-int *arriba;
-int *abajo;
-int i,j;
+	int *arriba;
+	int *abajo;
+	int i,j;
 
-arriba = malloc(tamvec*sizeof(int));
-abajo = malloc(tamvec*sizeof(int));
+	arriba = malloc(tamvec*sizeof(int));
+	abajo = malloc(tamvec*sizeof(int));
 
-// Inicializo los dos vectores con todos 0s
-for(i=0;i<tamvec;i++){
-	arriba[i] = 0;
+	// Inicializo los dos vectores con todos 0s
+	for(i=0;i<tamvec;i++)
+	{
+		arriba[i] = 0;
+		abajo[i] = 0;
 	}
 
-for(i=0;i<tamvec;i++){
-	abajo[i] = 0;
-	}
-
-// Recorro la fila de arriba y lleno con un 1 los fragmentos que hay
-i=0;
-for(i=0;i<n;i++){
-	if(red[i] != 0)
-		arriba[red[i]] = 1;
-	}
-
-// Recorro la fila de abajo y lleno con un 1 los fragmentos que hay
-//i=0;
-for(i=n*(n-1);i<n*n;i++){
-	//printf("%d",i);
-	if(red[i] != 0){
-		abajo[*(red+i)] = 1;
+	// Recorro la fila de arriba y lleno con un 1 los fragmentos que hay
+	i=0;
+	for(i=0;i<n;i++){
+		if(red[i] != 0)
+			arriba[red[i]] = 1;
 		}
+
+	// Recorro la fila de abajo y lleno con un 1 los fragmentos que hay
+	for(i=n*(n-1);i<n*n;i++)
+	{
+		if(red[i] != 0) abajo[*(red+i)] = 1;
 	}
 
-// Creo un vector que es el procuto elemento a elemento de arriba y abajo.
-// Si queda algun 1 en el vector producto significa que la red percolo.
-int producto[tamvec];
-i=0;
-for(i=0;i<tamvec;i++){
-	producto[i] = arriba[i] * abajo[i];
+	// Creo un vector que es el procuto elemento a elemento de arriba y abajo.
+	// Si queda algun 1 en el vector producto significa que la red percolo.
+	int producto[tamvec];
+	for(i=0;i<tamvec;i++)
+	{
+		producto[i] = arriba[i] * abajo[i];
 	}
 
-int perc = 0;
-i=0;
-for(i=0;i<tamvec;i++){
-	if(producto[i]) perc=1;
+	// Checkeo si algun fragmento llega de arriba a abajo
+	int perc = 0;
+	for(i=0;i<tamvec;i++)
+	{
+		if(producto[i]) perc=1;
 	}
 
-free(abajo);
-free(arriba);
+	free(abajo);
+	free(arriba);
 
-return perc;
+	return perc;
 }
 
 void escribir(int p, int z, int n, float pc, float disp)
 {
-/* Esta funcion toma los valores obtenidos por la simulacion y los guarda en un archivo de texto
-*/
+	/* Esta funcion toma los valores obtenidos por la simulacion y los guarda en un archivo de texto
+	*/
 
-int i;
-FILE *fp; // Declaro el puntero que va a ir al archivo (FILE es un tipo)
+	int i;
+	FILE *fp; // Declaro el puntero que va a ir al archivo (FILE es un tipo)
 
-fp = fopen("tp1_1a.txt","a"); // "r": read  "w": write   "a": append
+	fp = fopen("tp1_1a.txt","a"); // "r": read  "w": write   "a": append
 
-fprintf(fp,"Tamano de la red: %d\n",n);
-fprintf(fp,"Numero de iteraciones: %d\n",z);
-fprintf(fp,"Precision utilizada: %d\n",p);
-fprintf(fp,"Probabilidad critica obtenida: %f\n",pc);
-fprintf(fp,"Dispersion: %f\n",disp);
-fprintf(fp,"\n");
+	fprintf(fp,"Tamano de la red: %d\n",n);
+	fprintf(fp,"Numero de iteraciones: %d\n",z);
+	fprintf(fp,"Precision utilizada: %d\n",p);
+	fprintf(fp,"Probabilidad critica obtenida: %f\n",pc);
+	fprintf(fp,"Dispersion: %f\n",disp);
+	fprintf(fp,"\n");
 
-fclose(fp);
+	fclose(fp);
 }
