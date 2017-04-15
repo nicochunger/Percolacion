@@ -1,37 +1,38 @@
 Ejercicio 1 a) de la guia de Percolacion
 
 Tamano de la red: 4
-Numero de iteraciones: 20000
+Numero de iteraciones: 27000
 Precision utilizada: 16
-Probabilidad critica obtenida: 0.562321
+Probabilidad critica obtenida: 0.561233
+Dispersion: 0.102822
 
 Tamano de la red: 8
-Numero de iteraciones: 20000
+Numero de iteraciones: 27000
 Precision utilizada: 16
-Probabilidad critica obtenida: 0.579353
+Probabilidad critica obtenida: 0.578518
+Dispersion: 0.070637
 
 Tamano de la red: 16
-Numero de iteraciones: 20000
+Numero de iteraciones: 27000
 Precision utilizada: 16
-Probabilidad critica obtenida: 0.588037
+Probabilidad critica obtenida: 0.587189
+Dispersion: 0.045259
 
 Tamano de la red: 32
-Numero de iteraciones: 20000
+Numero de iteraciones: 27000
 Precision utilizada: 16
-Probabilidad critica obtenida: 0.594143
+Probabilidad critica obtenida: 0.593840
+Dispersion: 0.027699
 
 Tamano de la red: 64
-Numero de iteraciones: 20000
+Numero de iteraciones: 27000
 Precision utilizada: 16
-Probabilidad critica obtenida: 0.592559
+Probabilidad critica obtenida: 0.592510
+Dispersion: 0.016983
 
 Tamano de la red: 128
-Numero de iteraciones: 5000
+Numero de iteraciones: 27000
 Precision utilizada: 16
-Probabilidad critica obtenida: 0.592785
-
-Tamano de la red: 128
-Numero de iteraciones: 5000
-Precision utilizada: 16
-Probabilidad critica obtenida: 0.592759
+Probabilidad critica obtenida: 0.592605
+Dispersion: 0.009656
 

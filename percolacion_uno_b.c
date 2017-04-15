@@ -3,9 +3,9 @@
 #include <math.h>
 #include <time.h>
 
-#define P     200             // 1/2^P, P=16
+#define P     500             // 1/2^P, P=16
 #define Z     1000          // iteraciones
-#define N     20             // lado de la red simulada
+#define N     40             // lado de la red simulada
 
 
 void  llenar(int *red, int n, float proba);
