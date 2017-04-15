@@ -94,6 +94,8 @@ int main(/*int argc,char *argv[]*/)
 	free(red);
 	free(ps);
 	free(proba);
+	free(intensidades);
+	free(masa_perc);
 
 	return 0;
 	/*
