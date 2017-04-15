@@ -3,9 +3,9 @@
 #include <math.h>
 #include <time.h>
 
-#define P     16             // 1/2^P, P=16
-#define Z     10000          // iteraciones
-#define N     4             // lado de la red simulada
+#define P     2000             // 1/2^P, P=16
+#define Z     1000          // iteraciones
+#define N     60             // lado de la red simulada
 
 
 void  llenar(int *red, int n, float proba);
@@ -19,153 +19,156 @@ void  escribir(int p, int z, int n, float pc, float disp);
 
 int main(/*int argc,char *argv[]*/)
 {
-  int    n,z,i,j,*red;
-  float  proba,denominador;
-  float  *ps,promedio,sum,disp; 
+	int    n,z,i,j,*red,count,dif,dif_actual;
+	float  *proba;
+	float  *ps;
+	float  promedio,sum,disp,p_actual;
 
-// ps: Vector con las probabilidades percolantes obtenidas en cada iteracion
-// promedio: Promedio de las probabilidades obtenidas en cada iteracion
-// disp: Dispersion de los pc obtenidos. Desviacion estandar.
+	// ps: Vector con la cantidad de de veces que percolo cada red
+	// promedio: Promedio de las probabilidades obtenidas en cada iteracion
+	// disp: Dispersion de los pc obtenidos. Desviacion estandar.
+	// count: cuenta cuantas veces percola una red con cierta probabilidad p
 
-  n=N; //Tamano de la red
-  z=Z; //Numero de iteraciones
+	n=N; //Tamano de la red
+	z=Z; //Numero de iteraciones
 
-/*
-  if (argc==3) 
-     {
-       sscanf(argv[1],"%d",&n);
-       sscanf(argv[2],"%d",&z);
-     }
-*/
-  
-  red=(int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
-  ps = malloc(z*sizeof(float)); // Probabilidad percolante despues de cada iteracion
-  srand(time(NULL)); // Inicia las seeds para la funcion rand()
-
-for(i=0;i<z;i++)
-    {
-      proba=0.5;
-      denominador=2.0;
- 
-      //srand(time(NULL));
-
-      for(j=0;j<P;j++)
-        {
-          llenar(red,n,proba);
-      
-          hoshen(red,n);
-        
-          denominador=2.0*denominador;
-
-          if (percola(red,n)) 
-             proba+=(-1.0/denominador); 
-          else proba+=(1.0/denominador);
-        }
-	ps[i] = proba;
-    }
-sum = 0.0;
-for(i=0;i<z;i++) sum+=ps[i]; //Calculo promedio de todos los pc obtenidos en ese tamano de red
-promedio = sum / z;
-
-printf("pc para red de lado %d: %f\n",n,promedio); // Imprime el pc obtenido
-
-// Calculo de la dispersion
-
-disp = 0;
-for(i=0;i<z;i++){
-	disp += (ps[i] - promedio)*(ps[i] - promedio);
+	/*
+	if (argc==3) 
+	{
+		sscanf(argv[1],"%d",&n);
+		sscanf(argv[2],"%d",&z);
 	}
-disp = sqrt(disp/z);
+	*/
 
-escribir(P, z, n, promedio, disp);
+	red=(int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
+	ps = malloc(P*sizeof(float)); // Contador de veces que percola con cierta probabilidad p
+	proba = malloc(P*sizeof(float)); // Probabilidades testeadas
+	srand(time(NULL)); // Inicia las seeds para la funcion rand()
 
-printf("%f\n",disp);
+	for(i=0;i<P;i++) 
+	{
+		proba[i] = i*(1.0/P);
+	}
 
-free(red);
-free(ps);
+	for(j=0;j<P;j++)
+	{
+		count = 0;
+		for(i=0;i<z;i++)
+		{
+			llenar(red,n,proba[j]);
 
-return 0;
-/*
+			hoshen(red,n);
+
+			if(percola(red,n)) 
+				count++;
+		}
+		ps[j] = count;
+	}
+
+	/*for(i=0;i<P;i++)
+		printf("%f\n",ps[i]);
+*/
+	dif_actual = 500;
+	for(i=0;i<P;i++)
+	{
+		dif = abs(ps[i] - (z/2));
+		if(dif<dif_actual)
+		{
+			dif_actual = dif;
+			p_actual = proba[i];
+		}
+	}
+
+	printf("pc para red de lado %d: %f\n",n,p_actual); // Imprime el pc obtenido
+
+	free(red);
+	free(ps);
+	free(proba);
+
+	return 0;
+	/*
 	llenar(red, n, proba);
 	imprimir(red, n);
 	hoshen(red, n);
 	imprimir(red, n);
 	printf("\n%d\n", percola(red, n));
-*/
+	*/
 }
 
 /* Definicion de Funciones */
 
 int hoshen(int *red,int n)
 {
-  /*
-    Esta funcion implementa en algoritmo de Hoshen-Kopelman.
-    Recibe el puntero que apunta a la red y asigna etiquetas 
-    a cada fragmento de red. 
-  */
+	/*
+	Esta funcion implementa en algoritmo de Hoshen-Kopelman.
+	Recibe el puntero que apunta a la red y asigna etiquetas 
+	a cada fragmento de red. 
+	*/
 
-  int i,j,k,s1,s2,frag;
-  int *clase;
+	int i,j,k,s1,s2,frag;
+	int *clase;
 
-  frag=0; //frag = Fragmento (etiqueta actual de los clusters)
-  
-  clase=(int *)malloc(n*n*sizeof(int));
+	frag=0; //frag = Fragmento (etiqueta actual de los clusters)
 
-  for(k=0;k<n*n;k++) *(clase+k)=frag;
-  
-  // primer elemento de la red
+	clase=(int *)malloc(n*n*sizeof(int));
 
-  s1=0;
-  frag=1; //Empiezo en 1 para que el primer fragmento sea un 2 (mirar func actualizar)
-  if (*red) frag=actualizar(red,clase,s1,frag);
-  
-  // primera fila de la red
+	for(k=0;k<n*n;k++) *(clase+k)=frag;
 
-  for(i=1;i<n;i++) 
-    {
-      if (*(red+i)) 
-         {
-           s1=*(red+i-1);  
-           frag=actualizar(red+i,clase,s1,frag);
-         }
-    }
-  
+	// primer elemento de la red
 
-  // el resto de las filas 
+	s1=0;
+	frag=1; //Empiezo en 1 para que el primer fragmento sea un 2 (mirar func actualizar)
+	if (*red) frag=actualizar(red,clase,s1,frag);
 
-  for(i=n;i<n*n;i=i+n)
-    {
+	// primera fila de la red
 
-      // primer elemento de cada fila
+	for(i=1;i<n;i++) 
+	{
+		if (*(red+i)) 
+		{
+			s1=*(red+i-1);  
+			frag=actualizar(red+i,clase,s1,frag);
+		}
+	}
 
-      if (*(red+i)) 
-         {
-           s1=*(red+i-n); 
-           frag=actualizar(red+i,clase,s1,frag);
-         }
 
-      for(j=1;j<n;j++)
-	  if (*(red+i+j))
-	  {
-	    s1=*(red+i+j-1); 
-        s2=*(red+i+j-n);
+	// el resto de las filas 
 
-	    if (s1*s2>0)
-	      {
-		etiqueta_falsa(red+i+j,clase,s1,s2);
-	      }
-	    else 
-	      { if (s1!=0) frag=actualizar(red+i+j,clase,s1,frag);
-	        else       frag=actualizar(red+i+j,clase,s2,frag);
-	      }
-	  }
-    }
+	for(i=n;i<n*n;i=i+n)
+	{
 
-  corregir_etiqueta(red,clase,n);
+		// primer elemento de cada fila
 
-  free(clase);
+		if (*(red+i)) 
+		{
+			s1=*(red+i-n); 
+			frag=actualizar(red+i,clase,s1,frag);
+		}
 
-  return 0;
+		for(j=1;j<n;j++)
+		if (*(red+i+j))
+		{
+			s1=*(red+i+j-1); 
+			s2=*(red+i+j-n);
+
+			if (s1*s2>0)
+			{
+				etiqueta_falsa(red+i+j,clase,s1,s2);
+			}
+			else 
+			{ if (s1!=0) 
+				frag=actualizar(red+i+j,clase,s1,frag);
+			else       
+				frag=actualizar(red+i+j,clase,s2,frag);
+			}
+		}
+	}
+
+	corregir_etiqueta(red,clase,n);
+
+	free(clase);
+
+	return 0;
 }
 
 void llenar(int* red, int n, float proba)
@@ -333,6 +336,9 @@ i=0;
 for(i=0;i<tamvec;i++){
 	if(producto[i]) perc=1;
 	}
+
+free(abajo);
+free(arriba);
 
 return perc;
 }
