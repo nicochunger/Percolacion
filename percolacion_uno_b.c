@@ -3,9 +3,9 @@
 #include <math.h>
 #include <time.h>
 
-#define P     1000             // 1/2^P, P=16
+#define P     200             // 1/2^P, P=16
 #define Z     1000          // iteraciones
-#define N     30             // lado de la red simulada
+#define N     20             // lado de la red simulada
 
 
 void  llenar(int *red, int n, float proba);
@@ -16,11 +16,12 @@ void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
 void  escribir(int p, int z, int n, float pc, float disp);
+int   intensidad(int *red, int n, int etiqueta);
 
 int main(/*int argc,char *argv[]*/)
 {
-	int    n,z,i,j,*red,count,dif,dif_actual;
-	float  *proba;
+	int    n,z,i,j,*red,count,dif,dif_actual,*masa_perc;
+	float  *proba,*intensidades;
 	float  *ps;
 	float  promedio,sum,disp,p_actual;
 
@@ -40,9 +41,11 @@ int main(/*int argc,char *argv[]*/)
 	}
 	*/
 
-	red=(int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
+	red = (int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
 	ps = malloc(P*sizeof(float)); // Contador de veces que percola con cierta probabilidad p
 	proba = malloc(P*sizeof(float)); // Probabilidades testeadas
+	intensidades = malloc(P*sizeof(float)); // Masa promedio del cluster percolante para cierta p
+	masa_perc = malloc(z*sizeof(int)); // Masas del cluster percolante
 	srand(time(NULL)); // Inicia las seeds para la funcion rand()
 
 	for(i=0;i<P;i++) 
@@ -53,15 +56,24 @@ int main(/*int argc,char *argv[]*/)
 	for(j=0;j<P;j++)
 	{
 		count = 0;
+		intensidades[j] = 0;
 		for(i=0;i<z;i++)
 		{
 			llenar(red,n,proba[j]);
 
 			hoshen(red,n);
+			masa_perc[i] = 0;
 
-			if(percola(red,n)) 
+			if(percola(red,n))
+			{
 				count++;
+				masa_perc[i] = intensidad(red,n,percola(red,n));
+			}
+			
+			intensidades[j] += masa_perc[i];
 		}
+		intensidades[j] /= z;
+		printf("%f\n",intensidades[j]);
 		ps[j] = count;
 	}
 
@@ -75,7 +87,6 @@ int main(/*int argc,char *argv[]*/)
 			p_actual = proba[i];
 		}
 	}
-
 	
 
 	printf("pc para red de lado %d: %f\n",n,p_actual); // Imprime el pc obtenido
@@ -332,7 +343,7 @@ int   percola(int *red,int n){
 	int perc = 0;
 	for(i=0;i<tamvec;i++)
 	{
-		if(producto[i]) perc=1;
+		if(producto[i]) perc=i;
 	}
 
 	free(abajo);
@@ -360,3 +371,29 @@ void escribir(int p, int z, int n, float pc, float disp)
 
 	fclose(fp);
 }
+
+int intensidad(int *red, int n, int etiqueta)
+{
+	/* Calcula el numero de nodos que hay en el cluster percolante */
+	
+	int i,cantidad;
+	if(percola(red,n))
+	{
+		for(i=0;i<n*n;i++)
+		{
+			if(red[i] == etiqueta)
+				cantidad++;
+		}
+	
+		return cantidad;
+	}
+
+	else
+		return 0;
+}
+
+
+
+
+
+
