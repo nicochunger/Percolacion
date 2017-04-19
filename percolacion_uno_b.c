@@ -15,16 +15,16 @@ int   actualizar(int *sitio,int *clase,int s,int frag);
 void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
-void  guardar_res(float *datos, int n, int tamano);
+void  guardar_resultados(float *datos, int n, int tamano);
 int   intensidad(int *red, int n, int etiqueta);
 float numero_s(int *red, int n, int s);
 
 int main(/*int argc,char *argv[]*/)
 {
-	int    n,z,i,j,*red,count,dif,dif_actual,*masa_perc;
+	int    n,z,i,j,*red,count,*masa_perc;
 	float  *proba,*intensidades;
 	float  *ps;
-	float  promedio,sum,disp,p_actual;
+	float  promedio,sum,disp,p_actual,dif_actual,dif;
 
 	// ps: Vector con la cantidad de de veces que percolo cada red
 	// promedio: Promedio de las probabilidades obtenidas en cada iteracion
@@ -49,13 +49,19 @@ int main(/*int argc,char *argv[]*/)
 	masa_perc = malloc(z*sizeof(int)); // Todas las masas obtenidas para cierta p (se reescribe)
 	srand(time(NULL)); // Inicia las seeds para la funcion rand()
 
+	// Creo archivo con el vector de probabilidades
+	FILE *fp;
+	fp = fopen("vector_probabilidades.txt", "w"); 
+
 	for(i=0;i<P;i++) 
 	{
 		proba[i] = i*(1.0/P); // Vector con todas las probabilidades
+		fprintf(fp,"%f\n",proba[i]);
 	}
 
+	fclose(fp);
 
-	for(n=4;n<130;n = n*2) // Itera sobre los tamanos de red
+	for(n=4;n<9;n=n*2) // Itera sobre los tamanos de red
 	{	
 		for(j=0;j<P;j++) // Itera sobre todos las probabilidades
 		{
@@ -79,13 +85,13 @@ int main(/*int argc,char *argv[]*/)
 			intensidades[j] /= z; // Saco promedio
 			intensidades[j] /= (n*n); //Divido por n*n para que este normalizado
 			//printf("%f\n",intensidades[j]);
-			ps[j] = count;
+			ps[j] = (float)count/z; // Probabilidad de percolar con probabilidad proba[j]
 		}
 
-		dif_actual = P/2; //Inicializo la diferencia actual para encontrar la menor de todas
+		dif_actual = 0.5; //Inicializo la diferencia actual para encontrar la menor de todas
 		for(i=0;i<P;i++)
 		{
-			dif = abs(ps[i] - (z/2));
+			dif = fabs(ps[i] - 0.5);
 			if(dif<dif_actual)
 			{
 				dif_actual = dif;
@@ -93,8 +99,10 @@ int main(/*int argc,char *argv[]*/)
 			}
 		}
 		
-		
-		printf("pc para red de lado %d: %f\n",n,p_actual); // Imprime el pc obtenido
+		guardar_resultados(ps,P,n);
+		printf("Cantidad de iteraciones: %d\n",z); // Imprime la cantidad de iteraciones
+		printf("Precision: %f\n", 1.0/P); // Imprime la presicion de p
+		printf("pc para red de lado %d: %f\n\n",n,p_actual); // Imprime el pc obtenido
 	}
 
 	free(red);
@@ -361,14 +369,14 @@ int   percola(int *red,int n){
 	return perc;
 }
 
-void guardar_res(float *datos, int n, int tamano)
+void guardar_resultados(float *datos, int n, int tamano)
 {
 	/*
 	Esta funcion toma un vector con datos y los guarda todos en un archivo de texto
 	*/
 
 	int i;
-	char nombre[12];
+	char nombre[15];
 	sprintf(nombre, "tp1_1b_%d.txt", tamano); // Creo el nombre del archivo
 
 	FILE *fp; // Declaro el puntero que va a ir al archivo (FILE es un tipo)
