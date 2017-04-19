@@ -4,8 +4,8 @@
 #include <time.h>
 
 #define P     500             // 1/2^P, P=16
-#define Z     1000          // iteraciones
-#define N     40             // lado de la red simulada
+#define Z     1000            // iteraciones
+#define N     30              // lado de la red simulada
 
 
 void  llenar(int *red, int n, float proba);
@@ -17,6 +17,7 @@ void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
 void  escribir(int p, int z, int n, float pc, float disp);
 int   intensidad(int *red, int n, int etiqueta);
+float numero_s(int *red, int n, int s);
 
 int main(/*int argc,char *argv[]*/)
 {
@@ -44,8 +45,8 @@ int main(/*int argc,char *argv[]*/)
 	red = (int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
 	ps = malloc(P*sizeof(float)); // Contador de veces que percola con cierta probabilidad p
 	proba = malloc(P*sizeof(float)); // Probabilidades testeadas
-	intensidades = malloc(P*sizeof(float)); // Masa promedio del cluster percolante para cierta p
-	masa_perc = malloc(z*sizeof(int)); // Masas del cluster percolante
+	intensidades = malloc(P*sizeof(float)); // Masa promedio del cluster percolante para cada p
+	masa_perc = malloc(z*sizeof(int)); // Todas las masas obtenidas para cierta p (se reescribe)
 	srand(time(NULL)); // Inicia las seeds para la funcion rand()
 
 	for(i=0;i<P;i++) 
@@ -379,6 +380,7 @@ int intensidad(int *red, int n, int etiqueta)
 	/* Calcula el numero de nodos que hay en el cluster percolante */
 	
 	int i,cantidad;
+	cantidad = 0;
 	if(percola(red,n))
 	{
 		for(i=0;i<n*n;i++)
@@ -394,7 +396,17 @@ int intensidad(int *red, int n, int etiqueta)
 		return 0;
 }
 
+float numero_s(int *red, int n, int s)
+{
+/*
+Esta funcion calcula el ns para cierta red. Toma una red con el algoritmo de hoshen ya aplicado.
+Es decir los clusters estan identificados y tambien toma un tamano de cluster. Calcula la cantidad
+de cluster de tamano s presentes en la red y lo divide por la cantidad de sitios totales.
+*/ 
 
+
+
+}
 
 
 
