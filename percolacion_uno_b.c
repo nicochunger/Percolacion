@@ -15,7 +15,7 @@ int   actualizar(int *sitio,int *clase,int s,int frag);
 void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
-void  escribir(int p, int z, int n, float pc, float disp);
+void  guardar_res(float *datos, int n, int tamano);
 int   intensidad(int *red, int n, int etiqueta);
 float numero_s(int *red, int n, int s);
 
@@ -31,7 +31,7 @@ int main(/*int argc,char *argv[]*/)
 	// disp: Dispersion de los pc obtenidos. Desviacion estandar.
 	// count: cuenta cuantas veces percola una red con cierta probabilidad p
 
-	n=N; //Tamano de la red
+	//n=N; //Tamano de la red
 	z=Z; //Numero de iteraciones
 
 	/*
@@ -54,49 +54,55 @@ int main(/*int argc,char *argv[]*/)
 		proba[i] = i*(1.0/P); // Vector con todas las probabilidades
 	}
 
-	for(j=0;j<P;j++)
-	{
-		count = 0;
-		intensidades[j] = 0;
-		for(i=0;i<z;i++)
+
+	for(n=4;n<130;n = n*2) // Itera sobre los tamanos de red
+	{	
+		for(j=0;j<P;j++) // Itera sobre todos las probabilidades
 		{
-			llenar(red,n,proba[j]);
-
-			hoshen(red,n);
-			masa_perc[i] = 0;
-
-			if(percola(red,n))
+			count = 0;
+			intensidades[j] = 0;
+			for(i=0;i<z;i++) // Hace el experiemnto z cantidad de veces
 			{
-				count++;
-				masa_perc[i] = intensidad(red,n,percola(red,n));
-			}
+				llenar(red,n,proba[j]);
+
+				hoshen(red,n);
+				masa_perc[i] = 0;
+
+				if(percola(red,n))
+				{
+					count++;
+					masa_perc[i] = intensidad(red,n,percola(red,n));
+				}
 			
-			intensidades[j] += masa_perc[i];
+				intensidades[j] += masa_perc[i];
+			}
+			intensidades[j] /= z; // Saco promedio
+			intensidades[j] /= (n*n); //Divido por n*n para que este normalizado
+			//printf("%f\n",intensidades[j]);
+			ps[j] = count;
 		}
-		intensidades[j] /= z;
-		printf("%f\n",intensidades[j]);
-		ps[j] = count;
-	}
 
-	dif_actual = P/2; //Inicializo la diferencia actual para encontrar la menor de todas
-	for(i=0;i<P;i++)
-	{
-		dif = abs(ps[i] - (z/2));
-		if(dif<dif_actual)
+		dif_actual = P/2; //Inicializo la diferencia actual para encontrar la menor de todas
+		for(i=0;i<P;i++)
 		{
-			dif_actual = dif;
-			p_actual = proba[i];
+			dif = abs(ps[i] - (z/2));
+			if(dif<dif_actual)
+			{
+				dif_actual = dif;
+				p_actual = proba[i];
+			}
 		}
+		
+		
+		printf("pc para red de lado %d: %f\n",n,p_actual); // Imprime el pc obtenido
 	}
-	
-
-	printf("pc para red de lado %d: %f\n",n,p_actual); // Imprime el pc obtenido
 
 	free(red);
 	free(ps);
 	free(proba);
 	free(intensidades);
 	free(masa_perc);
+
 
 	return 0;
 	/*
@@ -355,22 +361,24 @@ int   percola(int *red,int n){
 	return perc;
 }
 
-void escribir(int p, int z, int n, float pc, float disp)
+void guardar_res(float *datos, int n, int tamano)
 {
-	/* Esta funcion toma los valores obtenidos por la simulacion y los guarda en un archivo de texto
+	/*
+	Esta funcion toma un vector con datos y los guarda todos en un archivo de texto
 	*/
 
 	int i;
+	char nombre[12];
+	sprintf(nombre, "tp1_1b_%d.txt", tamano); // Creo el nombre del archivo
+
 	FILE *fp; // Declaro el puntero que va a ir al archivo (FILE es un tipo)
 
-	fp = fopen("tp1_1a.txt","a"); // "r": read  "w": write   "a": append
+	fp = fopen(nombre,"w"); // "r": read  "w": write   "a": append
 
-	fprintf(fp,"Tamano de la red: %d\n",n);
-	fprintf(fp,"Numero de iteraciones: %d\n",z);
-	fprintf(fp,"Precision utilizada: %d\n",p);
-	fprintf(fp,"Probabilidad critica obtenida: %f\n",pc);
-	fprintf(fp,"Dispersion: %f\n",disp);
-	fprintf(fp,"\n");
+	for(i=0;i<n;i++)
+	{
+		fprintf(fp,"%f\n",datos[i]); //Escribo todos los datos en una linea nueva
+	}
 
 	fclose(fp);
 }
