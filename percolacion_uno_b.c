@@ -15,7 +15,7 @@ int   actualizar(int *sitio,int *clase,int s,int frag);
 void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
-void  guardar_resultados(float *datos, int n, char nombre);
+void  guardar_resultados(float *datos, int n, char nombre[15]);
 int   intensidad(int *red, int n, int etiqueta);
 float numero_s(int *red, int n, int s);
 void  escribir(int p, int z, int n, float pc);
@@ -113,6 +113,8 @@ int main(/*int argc,char *argv[]*/)
 		printf("Cantidad de iteraciones: %d\n",z); // Imprime la cantidad de iteraciones
 		printf("Precision: %f\n", 1.0/P); // Imprime la presicion de p
 		printf("pc para red de lado %d: %f\n\n",n,p_actual); // Imprime el pc obtenido
+
+		escribir(1.0/P,z,n,p_actual);
 	}
 
 	free(red);
@@ -379,7 +381,7 @@ int   percola(int *red,int n){
 	return perc;
 }
 
-void guardar_resultados(float *datos, int n, char nombre)
+void guardar_resultados(float *datos, int n, char nombre[15])
 {
 	/*
 	Esta funcion toma un vector con datos y los guarda todos en un archivo de texto
