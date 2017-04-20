@@ -3,8 +3,8 @@
 #include <math.h>
 #include <time.h>
 
-#define P     500             // 1/2^P, P=16
-#define Z     1000            // iteraciones
+#define P     1000             // 1/2^P, P=16
+#define Z     5000            // iteraciones
 #define N     30              // lado de la red simulada
 
 
@@ -17,8 +17,7 @@ void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
 void  guardar_resultados(float *datos, int n, char nombre[15]);
 int   intensidad(int *red, int n, int etiqueta);
-float numero_s(int *red, int n, int s);
-void  escribir(int p, int z, int n, float pc);
+void  escribir(float p, int z, int n, float pc);
 
 int main(/*int argc,char *argv[]*/)
 {
@@ -63,7 +62,7 @@ int main(/*int argc,char *argv[]*/)
 
 	fclose(fp);
 
-	for(n=4;n<9;n=n*2) // Itera sobre los tamanos de red
+	for(n=4;n<130;n=n*2) // Itera sobre los tamanos de red
 	{	
 		for(j=0;j<P;j++) // Itera sobre todos las probabilidades
 		{
@@ -422,7 +421,7 @@ int intensidad(int *red, int n, int etiqueta)
 		return 0;
 }
 
-void escribir(int p, int z, int n, float pc)
+void escribir(float p, int z, int n, float pc)
 {
 	/* Esta funcion toma los valores obtenidos por la simulacion y los guarda en un archivo de texto
 	*/
@@ -434,23 +433,11 @@ void escribir(int p, int z, int n, float pc)
 
 	fprintf(fp,"Tamano de la red: %d\n",n);
 	fprintf(fp,"Numero de iteraciones: %d\n",z);
-	fprintf(fp,"Precision utilizada: %d\n",p);
+	fprintf(fp,"Precision utilizada: %f\n",p);
 	fprintf(fp,"Probabilidad critica obtenida: %f\n",pc);
 	fprintf(fp,"\n");
 
 	fclose(fp);
-}
-
-float numero_s(int *red, int n, int s)
-{
-/*
-Esta funcion calcula el ns para cierta red. Toma una red con el algoritmo de hoshen ya aplicado.
-Es decir los clusters estan identificados y tambien toma un tamano de cluster. Calcula la cantidad
-de cluster de tamano s presentes en la red y lo divide por la cantidad de sitios totales.
-*/ 
-
-
-
 }
 
 
