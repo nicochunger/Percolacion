@@ -15,9 +15,10 @@ int   actualizar(int *sitio,int *clase,int s,int frag);
 void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
-void  guardar_resultados(float *datos, int n, int tamano);
+void  guardar_resultados(float *datos, int n, char nombre);
 int   intensidad(int *red, int n, int etiqueta);
 float numero_s(int *red, int n, int s);
+void  escribir(int p, int z, int n, float pc);
 
 int main(/*int argc,char *argv[]*/)
 {
@@ -25,6 +26,7 @@ int main(/*int argc,char *argv[]*/)
 	float  *proba,*intensidades;
 	float  *ps;
 	float  promedio,sum,disp,p_actual,dif_actual,dif;
+	char   nombre[15];
 
 	// ps: Vector con la cantidad de de veces que percolo cada red
 	// promedio: Promedio de las probabilidades obtenidas en cada iteracion
@@ -99,7 +101,15 @@ int main(/*int argc,char *argv[]*/)
 			}
 		}
 		
-		guardar_resultados(ps,P,n);
+			
+		// Guardo los datos de la probabilidad de percolar
+		sprintf(nombre, "tp1_1b_%d.txt", n); // Creo el nombre del archivo
+		guardar_resultados(ps,P,nombre);
+		
+		// Guardo las intensidades del cluster percolante
+		sprintf(nombre, "tp1_2_%d.txt", n);
+		guardar_resultados(intensidades,P,nombre);
+		
 		printf("Cantidad de iteraciones: %d\n",z); // Imprime la cantidad de iteraciones
 		printf("Precision: %f\n", 1.0/P); // Imprime la presicion de p
 		printf("pc para red de lado %d: %f\n\n",n,p_actual); // Imprime el pc obtenido
@@ -369,15 +379,13 @@ int   percola(int *red,int n){
 	return perc;
 }
 
-void guardar_resultados(float *datos, int n, int tamano)
+void guardar_resultados(float *datos, int n, char nombre)
 {
 	/*
 	Esta funcion toma un vector con datos y los guarda todos en un archivo de texto
 	*/
 
 	int i;
-	char nombre[15];
-	sprintf(nombre, "tp1_1b_%d.txt", tamano); // Creo el nombre del archivo
 
 	FILE *fp; // Declaro el puntero que va a ir al archivo (FILE es un tipo)
 
@@ -410,6 +418,25 @@ int intensidad(int *red, int n, int etiqueta)
 
 	else
 		return 0;
+}
+
+void escribir(int p, int z, int n, float pc)
+{
+	/* Esta funcion toma los valores obtenidos por la simulacion y los guarda en un archivo de texto
+	*/
+
+	int i;
+	FILE *fp; // Declaro el puntero que va a ir al archivo (FILE es un tipo)
+
+	fp = fopen("tp1_1b_resultados.txt","a"); // "r": read  "w": write   "a": append
+
+	fprintf(fp,"Tamano de la red: %d\n",n);
+	fprintf(fp,"Numero de iteraciones: %d\n",z);
+	fprintf(fp,"Precision utilizada: %d\n",p);
+	fprintf(fp,"Probabilidad critica obtenida: %f\n",pc);
+	fprintf(fp,"\n");
+
+	fclose(fp);
 }
 
 float numero_s(int *red, int n, int s)
