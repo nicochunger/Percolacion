@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Imoprta los datos
-intensidades = np.loadtxt("tp1_2_4.txt")
+intensidades = np.loadtxt("tp1_1b_128.txt")
 probabilidades = np.loadtxt("vector_probabilidades.txt")
 
 plt.plot(probabilidades,intensidades)

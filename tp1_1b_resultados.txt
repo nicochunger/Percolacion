@@ -1,0 +1,30 @@
+Tamano de la red: 4
+Numero de iteraciones: 5000
+Precision utilizada: 0.001000
+Probabilidad critica obtenida: 0.566000
+
+Tamano de la red: 8
+Numero de iteraciones: 5000
+Precision utilizada: 0.001000
+Probabilidad critica obtenida: 0.583000
+
+Tamano de la red: 16
+Numero de iteraciones: 5000
+Precision utilizada: 0.001000
+Probabilidad critica obtenida: 0.591000
+
+Tamano de la red: 32
+Numero de iteraciones: 5000
+Precision utilizada: 0.001000
+Probabilidad critica obtenida: 0.593000
+
+Tamano de la red: 64
+Numero de iteraciones: 5000
+Precision utilizada: 0.001000
+Probabilidad critica obtenida: 0.592000
+
+Tamano de la red: 128
+Numero de iteraciones: 5000
+Precision utilizada: 0.001000
+Probabilidad critica obtenida: 0.593000
+

@@ -43,11 +43,11 @@ int main(/*int argc,char *argv[]*/)
 	}
 	*/
 
-	red = (int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
-	ps = malloc(P*sizeof(float)); // Contador de veces que percola con cierta probabilidad p
-	proba = malloc(P*sizeof(float)); // Probabilidades testeadas
-	intensidades = malloc(P*sizeof(float)); // Masa promedio del cluster percolante para cada p
-	masa_perc = malloc(z*sizeof(int)); // Todas las masas obtenidas para cierta p (se reescribe)
+	
+	ps = (float *)malloc(P*sizeof(float)); // Contador de veces que percola con cierta probabilidad p
+	proba = (float *)malloc(P*sizeof(float)); // Probabilidades testeadas
+	intensidades = (float *)malloc(P*sizeof(float)); // Masa promedio del cluster percolante para cada p
+	masa_perc = (int *)malloc(z*sizeof(int)); // Todas las masas obtenidas para cierta p (se reescribe)
 	srand(time(NULL)); // Inicia las seeds para la funcion rand()
 
 	// Creo archivo con el vector de probabilidades
@@ -64,6 +64,7 @@ int main(/*int argc,char *argv[]*/)
 
 	for(n=4;n<130;n=n*2) // Itera sobre los tamanos de red
 	{	
+		red = (int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
 		for(j=0;j<P;j++) // Itera sobre todos las probabilidades
 		{
 			count = 0;
@@ -114,9 +115,9 @@ int main(/*int argc,char *argv[]*/)
 		printf("pc para red de lado %d: %f\n\n",n,p_actual); // Imprime el pc obtenido
 
 		escribir(1.0/P,z,n,p_actual);
+		free(red);
 	}
 
-	free(red);
 	free(ps);
 	free(proba);
 	free(intensidades);
