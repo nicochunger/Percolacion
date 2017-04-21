@@ -5,7 +5,7 @@
 
 #define P     1000             // 1/2^P, P=16
 #define Z     5000            // iteraciones
-#define N     30              // lado de la red simulada
+#define N     64              // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
 void  imprimir(int* red, int n);
@@ -15,13 +15,39 @@ void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
 void  guardar_resultados(float *datos, int n, char nombre[15]);
-float numero_s(int *red, int n, int s);
+float numero_s(int *red, int n, float *ns);
 
 
 int main()
 {
-
 	
+	int    n,z,i,*red,;
+	float  proba,*ns;
+	
+	// porba: Vector con los pc obtenidos en el punto 1a para cada L
+	// ns: vector con todos los ns obtenidos en cada
+	
+	n=N // Tamano de red	
+	z=Z // Iteraciones que voy a utilizar
+	
+	//proba = (float *)malloc(6*sizeof(float));
+	proba = 0.592510; // pc(64)
+	ns = (float *)malloc(n*n*sizeof(float));
+	red = (int *)malloc(n*n*sizeof(int));
+	
+	// Inicializo el vector ns en todos 0
+	for(i=0;i<n*n;i++) ns[i] = 0;
+
+	for(i=0;i<z;i++)
+	{
+		llenar(red,n,proba);
+		hoshen(red,n);
+		numero_s(red,n,ns);
+	}
+	
+	for(i=0;i<n*n;i++) ns[i] /= (float)z;
+	guardar_resultados(ns,n*n,"ns.txt");
+		
 
 }
 
@@ -302,6 +328,7 @@ float numero_s(int *red, int n, int s)
 	de cluster de tamano s presentes en la red y lo divide por la cantidad de sitios totales.
 	*/ 
 
+	
 
 
 }
