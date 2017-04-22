@@ -14,9 +14,9 @@ void imprimir(int* red, int m, int n);
 int* red;
 int n,m;
 float proba;
-proba = 0.75;
-n = 10;
-m = 10;
+proba = 0.5;
+n = 20;
+m = 20;
 red = malloc(n*m*sizeof(int));
 
 llenar(red, m, n, proba);
