@@ -39,7 +39,7 @@ int main(/*int argc,char *argv[]*/)
 	*/
 
 	srand(time(NULL)); // Inicia las seeds para la funcion rand()
-	for(n=4;n<130;n = n*2)
+	for(n=512;n<600;n = n*2)
 	{	  
 		red = (int *)malloc(n*n*sizeof(int)); // Alojo la memoria para la red
 		ps = malloc(z*sizeof(float)); // Probabilidad percolante despues de cada iteracion

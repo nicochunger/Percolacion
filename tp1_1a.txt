@@ -36,3 +36,9 @@ Precision utilizada: 16
 Probabilidad critica obtenida: 0.592605
 Dispersion: 0.009656
 
+Tamano de la red: 512
+Numero de iteraciones: 27000
+Precision utilizada: 16
+Probabilidad critica obtenida: 0.592813
+Dispersion: 0.003206
+

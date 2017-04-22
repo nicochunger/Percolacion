@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define P     1000             // 1/2^P, P=16
-#define Z     5000            // iteraciones
+#define Z     10000            // iteraciones
 #define N     64              // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
@@ -15,40 +15,65 @@ void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
 void  guardar_resultados(float *datos, int n, char nombre[15]);
-float numero_s(int *red, int n, float *ns);
+void  numero_s(int *red, int n, float *ns);
 
 
 int main()
 {
 	
-	int    n,z,i,*red,;
-	float  proba,*ns;
+	int    n,z,i,*red;
+	float  proba,*ns,*pc_n;
+	char   nombre[20];
 	
 	// porba: Vector con los pc obtenidos en el punto 1a para cada L
 	// ns: vector con todos los ns obtenidos en cada
 	
-	n=N // Tamano de red	
-	z=Z // Iteraciones que voy a utilizar
-	
-	//proba = (float *)malloc(6*sizeof(float));
-	proba = 0.592510; // pc(64)
-	ns = (float *)malloc(n*n*sizeof(float));
-	red = (int *)malloc(n*n*sizeof(int));
-	
-	// Inicializo el vector ns en todos 0
-	for(i=0;i<n*n;i++) ns[i] = 0;
+	//n=N; // Tamano de red	
+	z=Z; // Iteraciones que voy a utilizar
+		
+	pc_n = (float *)malloc(550*sizeof(float));
+	pc_n[4] = 0.561233;
+	pc_n[8] = 0.5578518;
+	pc_n[16] = 0.587189;
+	pc_n[32] = 0.59384;
+	pc_n[64] = 0.59251;
+	pc_n[128] = 0.592605;
+	pc_n[512] = 0.592813;
 
-	for(i=0;i<z;i++)
+	for(n=512;n<550;n*=2)
 	{
-		llenar(red,n,proba);
-		hoshen(red,n);
-		numero_s(red,n,ns);
+
+		//proba = (float *)malloc(6*sizeof(float));
+		proba = pc_n[n]; // pc(n)
+		ns = (float *)malloc(n*n*sizeof(float));
+		red = (int *)malloc(n*n*sizeof(int));
+	
+		// Inicializo el vector ns en todos 0
+		for(i=0;i<n*n;i++) ns[i] = 0;
+
+		for(i=0;i<z;i++)
+		{
+			llenar(red,n,proba);
+			hoshen(red,n);
+			numero_s(red,n,ns);
+			printf("%f\n",(float)i/100);
+		}
+	
+		for(i=0;i<n*n;i++)
+		{
+			//printf("%d\t%f\n",i,ns[i]);		
+			ns[i] /= (float)z;
+		}
+		
+		sprintf(nombre,"ns_%d_%d.txt",n,z);
+		guardar_resultados(ns,n*n,nombre);
+		
+		free(red);
+		free(ns);
 	}
 	
-	for(i=0;i<n*n;i++) ns[i] /= (float)z;
-	guardar_resultados(ns,n*n,"ns.txt");
-		
-
+	free(pc_n);
+	return 0;
 }
 
 
@@ -320,16 +345,45 @@ void guardar_resultados(float *datos, int n, char nombre[15])
 	fclose(fp);
 }
 
-float numero_s(int *red, int n, int s)
+void numero_s(int *red, int n, float *ns)
 {
 	/*
-	Esta funcion calcula el ns para cierta red. Toma una red con el algoritmo de hoshen ya aplicado.
-	Es decir los clusters estan identificados y tambien toma un tamano de cluster. Calcula la cantidad
-	de cluster de tamano s presentes en la red y lo divide por la cantidad de sitios totales.
+	Esta funcion calcula el ns para cierta red. Toma una red con el algoritmo de hoshen ya aplicado,
+	es decir los clusters estan identificados. Calcula el tamano de todos los fragmentos que hay
+	y si encuentra un fragmento de tamano s, le suma un uno a la posicion s del vector ns.
+	De esa forma el vector ns va guardando cuantos clusters de cada tamano hay.
+	Despues de muchas iteraciones se divide todo por la cantidad de iteraciones para obtener la
+	probabilidad de tener un fragmento de tamano s.
 	*/ 
 
+	int *fragmentos;
+	int i,j,cantidad_frag,contador,etiqueta;
 	
-
+	fragmentos = (int *)malloc(n*n*sizeof(int));
+	etiqueta = 1;
+	cantidad_frag = 0;
+	for(i=0;i<n*n;i++)
+	{
+		if(red[i]>etiqueta)
+		{
+			fragmentos[cantidad_frag] = red[i];
+			etiqueta = red[i];
+			cantidad_frag++;
+		}
+	}
+	
+	for(i=0;i<cantidad_frag;i++)
+	{
+		contador = 0;
+		for(j=0;j<n*n;j++)
+		{
+			if(red[j]==fragmentos[i]) contador++;
+		}
+		ns[contador] += 1.0;
+	}
+	
+	free(fragmentos);
+	
 
 }
 
