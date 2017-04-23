@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define P     1000             // 1/2^P, P=16
-#define Z     10000            // iteraciones
+#define Z     5000            // iteraciones
 #define N     64               // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
@@ -22,7 +22,7 @@ int main()
 
 	int    n,z,i,*red,contador,cantidad_percolo;
 	float  *masa_percolante,*pc_n;
-	char   nombre[20];
+	char   *nombre[20];
 
 	n=N; // Tamano de red
 	z=Z; // Inicializo z
@@ -39,26 +39,35 @@ int main()
 	masa_percolante = (float *)malloc(7*sizeof(float));
 	for(i=0;i<7;i++) masa_percolante[i] = 0; // Masa_percolante con 0s
 	contador = 0;
-	cantidad_percolo = 0;
+	
+	srand(time(NULL));
 
-	for(n=32;n<40;n*=2)
+	for(n=4;n<130;n*=2)
 	{
+		red = (int *)malloc(n*n*sizeof(int));
+		cantidad_percolo = 0;
 		for(i=0;i<z;i++)
 		{		
 			llenar(red,n,pc_n[n]);
 			hoshen(red,n);
 			if(percola(red,n))
 			{
-				masa_percolante[contador] += intensidad(red,n);
+				masa_percolante[contador] += intensidad(red,n,percola(red,n));
 				cantidad_percolo++;
 			}	
 		}
 		masa_percolante[contador] /= cantidad_percolo;
 		contador++;
+		printf("%d\n",cantidad_percolo);
+
+		free(red);
 	}
 
-	nombre = "tp1_3.txt";
-	guardar_resultador(masa_percolante,7,nombre);
+	*nombre = "tp1_3.txt";
+	guardar_resultados(masa_percolante,7,*nombre);
+
+	free(pc_n);
+	free(masa_percolante);
 
 }
 
