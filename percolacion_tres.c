@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define P     1000             // 1/2^P, P=16
-#define Z     5000            // iteraciones
+#define Z     50000            // iteraciones
 #define N     64               // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
@@ -36,8 +36,8 @@ int main()
 	pc_n[128] = 0.592605;
 	pc_n[512] = 0.592813;
 
-	masa_percolante = (float *)malloc(7*sizeof(float));
-	for(i=0;i<7;i++) masa_percolante[i] = 0; // Masa_percolante con 0s
+	masa_percolante = (float *)malloc(6*sizeof(float));
+	for(i=0;i<6;i++) masa_percolante[i] = 0; // Masa_percolante con 0s
 	contador = 0;
 	
 	srand(time(NULL));
@@ -64,7 +64,7 @@ int main()
 	}
 
 	*nombre = "tp1_3.txt";
-	guardar_resultados(masa_percolante,7,*nombre);
+	guardar_resultados(masa_percolante,6,*nombre);
 
 	free(pc_n);
 	free(masa_percolante);
