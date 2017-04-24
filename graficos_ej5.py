@@ -11,5 +11,5 @@ log_y = np.log(abs(y-0.592510))
 
 plt.plot(log_x,log_y)
 
-ajuste = np.polyfit(log_x[1:],log_y[1:],1)
+ajuste = np.polyfit(log_x[1:],log_y[1:],1,full=True)
 print ajuste
