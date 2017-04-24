@@ -3,8 +3,8 @@
 #include <math.h>
 #include <time.h>
 
-#define P     1000             // 1/2^P, P=16
-#define Z     10000            // iteraciones
+#define P     200             // 1/2^P, P=16
+#define Z     2000            // iteraciones
 #define N     64              // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
@@ -17,66 +17,88 @@ int   percola(int *red,int n);
 void  guardar_resultados(float *datos, int n, char nombre[15]);
 void  numero_s(int *red, int n, float *ns);
 
-
 int main()
 {
-	
-	int    n,z,i,*red;
-	float  proba,*ns,*pc_n;
+
+	int    n,z,i,j,s,*red,indice;
+	float  *proba,*ns,tau,sigma,*ns_critico,*f_de_z,*ns_p,*p_max;
 	char   nombre[20];
-	
-	// porba: Vector con los pc obtenidos en el punto 1a para cada L
-	// ns: vector con todos los ns obtenidos en cada
-	
-	//n=N; // Tamano de red	
-	z=Z; // Iteraciones que voy a utilizar
 
-		
-	pc_n = (float *)malloc(550*sizeof(float));
-	pc_n[4] = 0.561233;
-	pc_n[8] = 0.5578518;
-	pc_n[16] = 0.587189;
-	pc_n[32] = 0.59384;
-	pc_n[64] = 0.59251;
-	pc_n[128] = 0.592605;
-	pc_n[512] = 0.592813;
+	n=N; //Tamano de red L=64
+	z=Z; //Iteraciones
 
-	for(n=512;n<550;n*=2)
+	//proba = 0.59251; //Probabilidad critica para L=64
+	tau = -1.739; //Tau obtenido para L=64 en el ejercicio 1d
+	sigma = (float)36/91; //Sigma para L=infinito
+	//s = 50; //Tamano de cluster que voy a analizar
+
+	red = (int *)malloc(n*n*sizeof(int));
+	ns = (float *)malloc(P*sizeof(float)); // ns para un s particular en funcion de p
+	ns_p = (float *)malloc(n*n*sizeof(float)); // ns para cierto p
+	proba = (float *)malloc(P*sizeof(float)); // Vector de probabilidades
+	ns_critico = (float *)malloc(n*n*sizeof(float)); // ns en pc para todos los s
+	f_de_z = (float *)malloc(P*sizeof(float)); // Funcion f(z)
+	p_max = (float *)malloc(16*sizeof(float)); // Vector de las p_max para los s de 1 a 15
+
+	FILE *fp;
+	fp = fopen("ns_64_100000.txt","r"); //Abro el archivo
+	i=0;
+    float num;
+    while(fscanf(fp, "%f", &num) > 0) 
 	{
+        ns_critico[i] = num;
+        i++;
+    }
+    fclose(fp);
 
-		//proba = (float *)malloc(6*sizeof(float));
-		proba = pc_n[n]; // pc(n)
-		ns = (float *)malloc(n*n*sizeof(float));
-		red = (int *)malloc(n*n*sizeof(int));
+	for(j=0;j<P;j++) proba[j] = (float)j/P; //Vector de todos los p
+	for(j=0;j<16;j++) p_max[j] = 0; // Inicializo p_max en 0
+	srand(time(NULL));
 	
-		// Inicializo el vector ns en todos 0
-		for(i=0;i<n*n;i++) ns[i] = 0;
-
-		for(i=0;i<z;i++)
+	for(s=1;s<16;s++)
+	{
+		for(j=0;j<P;j++)
 		{
-			llenar(red,n,proba);
-			hoshen(red,n);
-			numero_s(red,n,ns);
-			printf("%f\n",(float)i/100);
-		}
-	
-		for(i=0;i<n*n;i++)
-		{
-			//printf("%d\t%f\n",i,ns[i]);		
-			ns[i] /= (float)z;
+			for(i=0;i<n*n;i++) ns_p[i] = 0; //reseteo el ns_p
+			for(i=0;i<z;i++)
+			{
+				llenar(red,n,proba[j]);
+				hoshen(red,n);
+				numero_s(red,n,ns_p);
+			}
+			ns[j] = ns_p[s]/(float)z;
+			f_de_z[j] = ns[j]/ns_critico[s];
+			//printf("%d\n",j);
 		}
 		
-		sprintf(nombre,"ns_%d_%d.txt",n,z);
-		guardar_resultados(ns,n*n,nombre);
+		indice = 0;
+		for(i=0;i<P;i++)
+		{
+			if(f_de_z[i] > p_max[s]) 
+			{
+				p_max[s] = f_de_z[i];
+				indice = i;
+			}
+		}
 		
-		free(red);
-		free(ns);
+		p_max[s] = proba[indice];
+
+		printf("%d\t%f\n",s,p_max[s]);
+
 	}
-	
-	free(pc_n);
-	return 0;
-}
 
+
+	guardar_resultados(p_max,16,"tp1_5_pmax.txt");
+
+	free(red);
+	free(ns);
+	free(proba);
+	free(ns_p);
+	free(ns_critico);
+	free(f_de_z);
+	free(p_max);
+
+}
 
 
 /* Definicion de Funciones */
@@ -387,4 +409,3 @@ void numero_s(int *red, int n, float *ns)
 	
 
 }
-

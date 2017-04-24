@@ -4,9 +4,10 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Imoprta los datos
-n = 512
-nombre_archivo = "ns_" + str(n) + "_10000.txt"
+n = 64
+nombre_archivo = "ns_" + str(n) + "_100000.txt"
 ns = np.loadtxt(nombre_archivo)
+print len(ns)
 s = range(n*n)
 
 log_ns = np.log(ns)
