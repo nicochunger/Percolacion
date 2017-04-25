@@ -4,7 +4,7 @@
 #include <time.h>
 
 #define P     1000             // 1/2^P, P=16
-#define Z     10000            // iteraciones
+#define Z     2000            // iteraciones
 #define N     64              // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
@@ -14,7 +14,7 @@ int   actualizar(int *sitio,int *clase,int s,int frag);
 void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 int   percola(int *red,int n);
-void  guardar_resultados(float *datos, int n, char nombre[15]);
+void  guardar_resultados(float *datos, int n, char nombre[20]);
 void  numero_s(int *red, int n, float *ns);
 
 
@@ -41,7 +41,7 @@ int main()
 	pc_n[128] = 0.592605;
 	pc_n[512] = 0.592813;
 
-	for(n=512;n<550;n*=2)
+	for(n=64;n<70;n*=2)
 	{
 
 		//proba = (float *)malloc(6*sizeof(float));
@@ -57,7 +57,7 @@ int main()
 			llenar(red,n,proba);
 			hoshen(red,n);
 			numero_s(red,n,ns);
-			printf("%f\n",(float)i/100);
+			printf("%f\n",i*(100.0/z));
 		}
 	
 		for(i=0;i<n*n;i++)
@@ -66,7 +66,7 @@ int main()
 			ns[i] /= (float)z;
 		}
 		
-		sprintf(nombre,"ns_%d_%d.txt",n,z);
+		sprintf(nombre,"ns_%d_probando.txt",n);
 		guardar_resultados(ns,n*n,nombre);
 		
 		free(red);
@@ -361,30 +361,21 @@ void numero_s(int *red, int n, float *ns)
 	int i,j,cantidad_frag,contador,etiqueta;
 	
 	fragmentos = (int *)malloc(n*n*sizeof(int));
-	etiqueta = 1;
-	cantidad_frag = 0;
+	for(i=0;i<n*n;i++) fragmentos[i] = 0; // Inicializo en 0
+
 	for(i=0;i<n*n;i++)
 	{
-		if(red[i]>etiqueta)
+		if(red[i]!=0)
 		{
-			fragmentos[cantidad_frag] = red[i];
-			etiqueta = red[i];
-			cantidad_frag++;
+			fragmentos[red[i]] += 1;
 		}
 	}
-	
-	for(i=0;i<cantidad_frag;i++)
+
+	for(i=0;i<n*n;i++)
 	{
-		contador = 0;
-		for(j=0;j<n*n;j++)
-		{
-			if(red[j]==fragmentos[i]) contador++;
-		}
-		ns[contador] += 1.0;
+		if(fragmentos[i]!=0) ns[fragmentos[i]] += 1;
 	}
 	
 	free(fragmentos);
-	
-
 }
 

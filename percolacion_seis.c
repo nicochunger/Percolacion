@@ -5,7 +5,7 @@
 
 #define P     200             // 1/2^P, P=16
 #define Z     2000            // iteraciones
-#define N     64              // lado de la red simulada
+#define N     128              // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
 void  imprimir(int* red, int n);
@@ -15,13 +15,14 @@ void  etiqueta_falsa(int *sitio,int *clase,int s1,int s2);
 void  corregir_etiqueta(int *red,int *clase,int n);
 void  guardar_resultados(float *datos, int n, char nombre[20]);
 void  numero_s(int *red, int n, float *ns);
+int   percola(int *red,int n);
 
 int main()
 {
 
 	int    n,z,i,j,s,*red,indice;
 	float  *proba,*ns,tau,sigma,*m2,start,stop;
-	//char   nombre[20];
+	char   nombre[20];
 
 	n=N; //Tamano de red
 	z=Z; //Iteraciones
@@ -36,8 +37,8 @@ int main()
 	proba = (float *)malloc(P*sizeof(float)); // Vector de probabilidades
 	m2 = (float *)malloc(P*sizeof(float)); // Vector de las m2(p)
 
-	start = 0.4;
-	stop = 0.8;
+	start = 0.5;
+	stop = 0.7;
 	for(j=0;j<P;j++) proba[j] = start + (stop-start)*((float)j/P); //Vector de todos los p
 	srand(time(NULL));
 	
@@ -62,7 +63,8 @@ int main()
 	}
 
 	guardar_resultados(proba,P,"tp1_6_probas.txt");
-	guardar_resultados(m2,P,"tp1_6_m2.txt");
+	sprintf(nombre,"tp1_6_m2_%d.txt",n);
+	guardar_resultados(m2,P,nombre);
 
 	free(red);
 	free(ns);
@@ -295,32 +297,83 @@ void numero_s(int *red, int n, float *ns)
 	*/ 
 
 	int *fragmentos;
-	int i,j,cantidad_frag,contador,etiqueta;
+	int i,j,cantidad_frag,contador,etiqueta,etiqueta_perc;
 	
 	fragmentos = (int *)malloc(n*n*sizeof(int));
-	etiqueta = 1;
-	cantidad_frag = 0;
+	etiqueta_perc = percola(red,n);
+	
+	for(i=0;i<n*n;i++) fragmentos[i] = 0; // Inicializo en 0
+
 	for(i=0;i<n*n;i++)
 	{
-		if(red[i]>etiqueta)
+		if(red[i]!=0 && red[i]!=etiqueta_perc)
 		{
-			fragmentos[cantidad_frag] = red[i];
-			etiqueta = red[i];
-			cantidad_frag++;
+			fragmentos[red[i]] += 1;
 		}
 	}
-	
-	for(i=0;i<cantidad_frag;i++)
+
+	for(i=0;i<n*n;i++)
 	{
-		contador = 0;
-		for(j=0;j<n*n;j++)
-		{
-			if(red[j]==fragmentos[i]) contador++;
-		}
-		ns[contador] += 1.0;
+		if(fragmentos[i]!=0) ns[fragmentos[i]] += 1;
 	}
 	
 	free(fragmentos);
-	
+}
 
+
+int   percola(int *red,int n){
+
+	/*
+	Esta funcion se fija si la red percolo o no, La forma en que lo hace es fijandose si unos de los
+	clusters se extiende desde el extremo de arriba hasta el extremo de abajo.
+	Devuelve la etiqueta que percolo si es que percolo y un 0 si no percolo.
+	*/
+	int tamvec = (n*n)/2; //Tamano maximo de etiquetas posibles
+
+	int *arriba;
+	int *abajo;
+	int i,j;
+
+	arriba = malloc(tamvec*sizeof(int));
+	abajo = malloc(tamvec*sizeof(int));
+
+	// Inicializo los dos vectores con todos 0s
+	for(i=0;i<tamvec;i++)
+	{
+		arriba[i] = 0;
+		abajo[i] = 0;
+	}
+
+	// Recorro la fila de arriba y lleno con un 1 los fragmentos que hay
+	i=0;
+	for(i=0;i<n;i++){
+		if(red[i] != 0)
+			arriba[red[i]] = 1;
+		}
+
+	// Recorro la fila de abajo y lleno con un 1 los fragmentos que hay
+	for(i=n*(n-1);i<n*n;i++)
+	{
+		if(red[i] != 0) abajo[*(red+i)] = 1;
+	}
+
+	// Creo un vector que es el procuto elemento a elemento de arriba y abajo.
+	// Si queda algun 1 en el vector producto significa que la red percolo.
+	int producto[tamvec];
+	for(i=0;i<tamvec;i++)
+	{
+		producto[i] = arriba[i] * abajo[i];
+	}
+
+	// Checkeo si algun fragmento llega de arriba a abajo
+	int perc = 0;
+	for(i=0;i<tamvec;i++)
+	{
+		if(producto[i]) perc=i;
+	}
+
+	free(abajo);
+	free(arriba);
+
+	return perc;
 }
