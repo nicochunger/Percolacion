@@ -17,8 +17,8 @@ rango = 70
 pts_gamma = ind_max-5-rango
 
 for i in range(pts_gamma):
-    ajuste1 = np.polyfit(np.log(abs(p[i:rango+i]-0.5926)),np.log(m2[i:rango+i]),1)
-    ajuste2 = np.polyfit(np.log(abs(p[ind_max+pts_gamma-i:ind_max+pts_gamma+rango-i]-0.5926)),np.log(m2[ind_max+pts_gamma-i:ind_max+pts_gamma+rango-i]),1)
+    ajuste1 = np.polyfit(np.log(abs(p[0:rango+i]-0.5926)),np.log(m2[0:rango+i]),1)
+    ajuste2 = np.polyfit(np.log(abs(p[ind_max+pts_gamma-i:ind_max+pts_gamma+rango]-0.5926)),np.log(m2[ind_max+pts_gamma-i:ind_max+pts_gamma+rango]),1)
     gamma_menos.append(ajuste1[0])
     gamma_mas.append(ajuste2[0])
 

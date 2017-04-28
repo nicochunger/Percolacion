@@ -4,7 +4,7 @@ import numpy as np
 import matplotlib.pyplot as plt
 
 # Imoprta los datos
-n = 64
+n = 128
 nombre_archivo = "ns_" + str(n) + "_100000.txt"
 ns = np.loadtxt(nombre_archivo)
 print len(ns)
@@ -15,14 +15,16 @@ log_s = np.log(s)
 
 plt.plot(log_s,log_ns)
 
-start = int(np.exp(3))
+start = int(np.exp(2))
 final = int(np.exp(5))
 
 x_fiteo = log_s[start:final]
 y_fiteo = log_ns[start:final]
 
 #plt.plot(x_fiteo,y_fiteo)
-ajuste = np.polyfit(x_fiteo,y_fiteo,1)
+ajuste = np.polyfit(x_fiteo,y_fiteo,1,full=True)
+plt.xlabel("log(s)")
+plt.ylabel("log(n_s(pc))")
 
 print ajuste
 
