@@ -5,7 +5,7 @@
 
 #define P     200             // 1/2^P, P=16
 #define Z     2000            // iteraciones
-#define N     128              // lado de la red simulada
+#define N     6              // lado de la red simulada
 
 void  llenar(int *red, int n, float proba);
 void  imprimir(int* red, int n);
@@ -22,7 +22,7 @@ int main()
 
 	int    n,z,i,j,s,*red,indice;
 	float  *proba,*ns,tau,sigma,*m2,start,stop;
-	char   nombre[20];
+	char   nombre_m2[20],nombre_p[20];
 
 	n=N; //Tamano de red
 	z=Z; //Iteraciones
@@ -37,12 +37,11 @@ int main()
 	proba = (float *)malloc(P*sizeof(float)); // Vector de probabilidades
 	m2 = (float *)malloc(P*sizeof(float)); // Vector de las m2(p)
 
-	start = 0.5;
-	stop = 0.7;
+	start = 0.0;
+	stop = 1.0;
 	for(j=0;j<P;j++) proba[j] = start + (stop-start)*((float)j/P); //Vector de todos los p
 	srand(time(NULL));
 	
-
 	for(j=0;j<P;j++)
 	{
 		for(i=0;i<n*n;i++) ns[i] = 0; // Reseteo el vector ns para cada p
@@ -62,9 +61,10 @@ int main()
 		printf("%d\n",j);
 	}
 
-	guardar_resultados(proba,P,"tp1_6_probas.txt");
-	sprintf(nombre,"tp1_6_m2_%d.txt",n);
-	guardar_resultados(m2,P,nombre);
+	sprintf(nombre_p,"tp1_6_probas_%d.txt",n);
+	guardar_resultados(proba,P,nombre_p);
+	sprintf(nombre_m2,"tp1_6_m2_%d.txt",n);
+	guardar_resultados(m2,P,nombre_m2);
 
 	free(red);
 	free(ns);
